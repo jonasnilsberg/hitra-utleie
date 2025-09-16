@@ -6,7 +6,10 @@ on:
 
 jobs:
   build-docker-image:
-    name: Build and push docker image
+    strategy:
+      matrix:
+        project: [frontend, backend]
+    name: Build and push ${{ matrix.project }} docker image
     runs-on: ubuntu-latest
     permissions:
       attestations: write
@@ -26,8 +29,8 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          file: frontend/Dockerfile
-          context: ./frontend
+          file: ${{ matrix.project }}/Dockerfile
+          context: ${{ matrix.project }}
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}/hitra-utleie:frontend-production-latest
+            ghcr.io/${{ github.repository }}/hitra-utleie:${{ matrix.project }}-production-latest
