@@ -15,7 +15,7 @@ function App() {
           alt="logo"
         />
         <p>
-          Edit <code>src/routes/index.tsx</code> and save to reload 123.
+          Edit <code>src/routes/index.tsx</code> and save to reload 12345.
         </p>
         <a
           className="text-[#61dafb] hover:underline"
