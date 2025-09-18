@@ -25,7 +25,7 @@ function Homepage() {
               />
             </div>
             <div>
-              <p className='text-center font-mono'>Hitra Utleie AS tilbyr utleie av maskiner og utstyr til profesjonelle aktører i byggebransjen og til privatmarkedet</p>
+              <p className='text-center font-mono'>Hitra Utleie AS tilbyr leie av maskiner og utstyr til profesjonelle aktører i byggebransjen og til privatmarkedet</p>
             </div>
             <div className='flex justify-center mt-12'>
               <Link

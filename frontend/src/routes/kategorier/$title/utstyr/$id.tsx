@@ -241,7 +241,6 @@ function ShowInterestModal({ open, setOpen, equipment }: ShowInterestModalProps)
                   type="submit"
                   className="inline-flex w-full justify-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-xs cursor-pointer hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
-                  <svg className="mr-3 size-5 animate-spin ..." viewBox="0 0 24 24"></svg>
                   Send
                 </button>
               </div>
