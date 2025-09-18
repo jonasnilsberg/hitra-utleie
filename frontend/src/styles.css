@@ -3,6 +3,8 @@
 @theme {
   --font-sans: Inter, sans-serif;
   --font-sans--font-feature-settings: 'cv11';
+  --color-primary: #153C71;
+  --color-primary-background: #E6E3DE;
 }
 
 body {

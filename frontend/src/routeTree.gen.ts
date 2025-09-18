@@ -9,38 +9,102 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as OmOssRouteImport } from './routes/om-oss'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as KategorierIndexRouteImport } from './routes/kategorier/index'
+import { Route as KategorierTitleUtstyrIndexRouteImport } from './routes/kategorier/$title/utstyr/index'
+import { Route as KategorierTitleUtstyrIdRouteImport } from './routes/kategorier/$title/utstyr/$id'
 
+const OmOssRoute = OmOssRouteImport.update({
+  id: '/om-oss',
+  path: '/om-oss',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const KategorierIndexRoute = KategorierIndexRouteImport.update({
+  id: '/kategorier/',
+  path: '/kategorier/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KategorierTitleUtstyrIndexRoute =
+  KategorierTitleUtstyrIndexRouteImport.update({
+    id: '/kategorier/$title/utstyr/',
+    path: '/kategorier/$title/utstyr/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const KategorierTitleUtstyrIdRoute = KategorierTitleUtstyrIdRouteImport.update({
+  id: '/kategorier/$title/utstyr/$id',
+  path: '/kategorier/$title/utstyr/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/om-oss': typeof OmOssRoute
+  '/kategorier': typeof KategorierIndexRoute
+  '/kategorier/$title/utstyr/$id': typeof KategorierTitleUtstyrIdRoute
+  '/kategorier/$title/utstyr': typeof KategorierTitleUtstyrIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/om-oss': typeof OmOssRoute
+  '/kategorier': typeof KategorierIndexRoute
+  '/kategorier/$title/utstyr/$id': typeof KategorierTitleUtstyrIdRoute
+  '/kategorier/$title/utstyr': typeof KategorierTitleUtstyrIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/om-oss': typeof OmOssRoute
+  '/kategorier/': typeof KategorierIndexRoute
+  '/kategorier/$title/utstyr/$id': typeof KategorierTitleUtstyrIdRoute
+  '/kategorier/$title/utstyr/': typeof KategorierTitleUtstyrIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/om-oss'
+    | '/kategorier'
+    | '/kategorier/$title/utstyr/$id'
+    | '/kategorier/$title/utstyr'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/om-oss'
+    | '/kategorier'
+    | '/kategorier/$title/utstyr/$id'
+    | '/kategorier/$title/utstyr'
+  id:
+    | '__root__'
+    | '/'
+    | '/om-oss'
+    | '/kategorier/'
+    | '/kategorier/$title/utstyr/$id'
+    | '/kategorier/$title/utstyr/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  OmOssRoute: typeof OmOssRoute
+  KategorierIndexRoute: typeof KategorierIndexRoute
+  KategorierTitleUtstyrIdRoute: typeof KategorierTitleUtstyrIdRoute
+  KategorierTitleUtstyrIndexRoute: typeof KategorierTitleUtstyrIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/om-oss': {
+      id: '/om-oss'
+      path: '/om-oss'
+      fullPath: '/om-oss'
+      preLoaderRoute: typeof OmOssRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +112,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/kategorier/': {
+      id: '/kategorier/'
+      path: '/kategorier'
+      fullPath: '/kategorier'
+      preLoaderRoute: typeof KategorierIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kategorier/$title/utstyr/': {
+      id: '/kategorier/$title/utstyr/'
+      path: '/kategorier/$title/utstyr'
+      fullPath: '/kategorier/$title/utstyr'
+      preLoaderRoute: typeof KategorierTitleUtstyrIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kategorier/$title/utstyr/$id': {
+      id: '/kategorier/$title/utstyr/$id'
+      path: '/kategorier/$title/utstyr/$id'
+      fullPath: '/kategorier/$title/utstyr/$id'
+      preLoaderRoute: typeof KategorierTitleUtstyrIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  OmOssRoute: OmOssRoute,
+  KategorierIndexRoute: KategorierIndexRoute,
+  KategorierTitleUtstyrIdRoute: KategorierTitleUtstyrIdRoute,
+  KategorierTitleUtstyrIndexRoute: KategorierTitleUtstyrIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
