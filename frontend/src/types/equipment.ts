@@ -3,6 +3,6 @@ export type Equipment = {
   price?: string
   title: string
   description: string
-  images: string[]
+  images: Array<string>
   spec: Record<string, string | number>
 }

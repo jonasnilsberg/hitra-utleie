@@ -1,6 +1,4 @@
 import { createFileRoute } from '@tanstack/react-router'
-import pb from '../../../../pocketbase'
-import type { Equipment } from '../../../../types/equipment'
 import {
   Dialog,
   DialogBackdrop,
@@ -13,15 +11,18 @@ import {
   TabPanels,
 } from '@headlessui/react'
 import { useState } from 'react'
+import pb from '../../../../pocketbase'
+import type { Equipment } from '../../../../types/equipment'
 
 export const Route = createFileRoute('/kategorier/$title/utstyr/$id')({
   component: Equipment,
   loader: async ({ params }) => {
-    const equipment = await pb.collection<Equipment>('equipment').getOne(params.id)
+    const equipment = await pb
+      .collection<Equipment>('equipment')
+      .getOne(params.id)
     return { equipment }
-  }
+  },
 })
-
 
 function Equipment() {
   const { equipment } = Route.useLoaderData()
@@ -43,7 +44,11 @@ function Equipment() {
                   >
                     <span className="sr-only">{image}</span>
                     <span className="absolute inset-0 overflow-hidden rounded-md">
-                      <img alt="" src={pb.files.getURL(equipment, image)} className="size-full object-cover" />
+                      <img
+                        alt=""
+                        src={pb.files.getURL(equipment, image)}
+                        className="size-full object-cover"
+                      />
                     </span>
                     <span
                       aria-hidden="true"
@@ -57,7 +62,10 @@ function Equipment() {
             <TabPanels>
               {equipment.images.map((image) => (
                 <TabPanel key={image}>
-                  <img src={pb.files.getURL(equipment, image)} className="aspect-square w-full object-cover sm:rounded-lg" />
+                  <img
+                    src={pb.files.getURL(equipment, image)}
+                    className="aspect-square w-full object-cover sm:rounded-lg"
+                  />
                 </TabPanel>
               ))}
             </TabPanels>
@@ -65,12 +73,16 @@ function Equipment() {
 
           {/* Product info */}
           <div className="mt-10 px-4 sm:mt-16 sm:px-0 lg:mt-0">
-            <h1 className="text-3xl font-bold tracking-tight text-gray-900">{equipment.title}</h1>
+            <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+              {equipment.title}
+            </h1>
 
             {equipment.price && (
               <div className="mt-3">
                 <h2 className="sr-only">Product information</h2>
-                <p className="text-xl tracking-tight text-gray-900">{equipment.price}</p>
+                <p className="text-xl tracking-tight text-gray-900">
+                  {equipment.price}
+                </p>
               </div>
             )}
 
@@ -103,25 +115,21 @@ function Equipment() {
                     </p>
                   </h3>
                   <div className="pb-6">
-                    <div className='grid grid-cols-3'>
-                    </div>
-                    <div className='space-y-2'>
+                    <div className="grid grid-cols-3"></div>
+                    <div className="space-y-2">
                       {Object.entries(equipment.spec).map(([key, value]) => (
                         <div key={key} className="flex">
                           <div className="font-semibold text-sm">
-                            <p className='min-w-[160px]'>
+                            <p className="min-w-[160px]">
                               {key.charAt(0).toUpperCase() + key.slice(1)}:
                             </p>
                           </div>
                           <div>
-                            <p className='text-sm'>
-                              {value}
-                            </p>
+                            <p className="text-sm">{value}</p>
                           </div>
                         </div>
                       ))}
                     </div>
-
                   </div>
                 </div>
               </div>
@@ -140,7 +148,11 @@ interface ShowInterestModalProps {
   equipment: Equipment
 }
 
-function ShowInterestModal({ open, setOpen, equipment }: ShowInterestModalProps) {
+function ShowInterestModal({
+  open,
+  setOpen,
+  equipment,
+}: ShowInterestModalProps) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
@@ -151,18 +163,21 @@ function ShowInterestModal({ open, setOpen, equipment }: ShowInterestModalProps)
     event.preventDefault()
     setLoading(true)
     // Handle form submission logic here
-    pb.collection('leads').create({
-      name,
-      email,
-      phone,
-      equipment: equipment.id
-    }).then(() => {
-      setOpen(false)
-      setLoading(false)
-    }).catch((err) => {
-      setError('Noe gikk galt, vennligst prøv igjen senere.')
-      setLoading(false)
-    })
+    pb.collection('leads')
+      .create({
+        name,
+        email,
+        phone,
+        equipment: equipment.id,
+      })
+      .then(() => {
+        setOpen(false)
+        setLoading(false)
+      })
+      .catch((_err) => {
+        setError('Noe gikk galt, vennligst prøv igjen senere.')
+        setLoading(false)
+      })
   }
 
   return (
@@ -181,7 +196,10 @@ function ShowInterestModal({ open, setOpen, equipment }: ShowInterestModalProps)
             >
               <div>
                 <div className="mt-3 sm:mt-5">
-                  <DialogTitle as="h3" className="text-base font-semibold text-gray-900">
+                  <DialogTitle
+                    as="h3"
+                    className="text-base font-semibold text-gray-900"
+                  >
                     Meld Interesse
                   </DialogTitle>
                   <div className="mt-2">
@@ -189,8 +207,11 @@ function ShowInterestModal({ open, setOpen, equipment }: ShowInterestModalProps)
                       Fyll ut skjemaet under, så tar vi kontakt med deg!
                     </p>
                   </div>
-                  <div className='mt-4'>
-                    <label htmlFor="name" className="block text-sm/6 font-medium text-gray-900">
+                  <div className="mt-4">
+                    <label
+                      htmlFor="name"
+                      className="block text-sm/6 font-medium text-gray-900"
+                    >
                       Navn
                     </label>
                     <div className="mt-2">
@@ -206,8 +227,11 @@ function ShowInterestModal({ open, setOpen, equipment }: ShowInterestModalProps)
                     </div>
                   </div>
 
-                  <div className='mt-4'>
-                    <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">
+                  <div className="mt-4">
+                    <label
+                      htmlFor="email"
+                      className="block text-sm/6 font-medium text-gray-900"
+                    >
                       E-postadresse
                     </label>
                     <div className="mt-2">
@@ -223,8 +247,11 @@ function ShowInterestModal({ open, setOpen, equipment }: ShowInterestModalProps)
                     </div>
                   </div>
 
-                  <div className='mt-4'>
-                    <label htmlFor="phone" className="block text-sm/6 font-medium text-gray-900">
+                  <div className="mt-4">
+                    <label
+                      htmlFor="phone"
+                      className="block text-sm/6 font-medium text-gray-900"
+                    >
                       Telefonnummer
                     </label>
                     <div className="mt-2">
@@ -258,4 +285,3 @@ function ShowInterestModal({ open, setOpen, equipment }: ShowInterestModalProps)
     </Dialog>
   )
 }
-

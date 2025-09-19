@@ -1,5 +1,7 @@
-import PocketBase from "pocketbase";
+import PocketBase from 'pocketbase'
 
-const pb = new PocketBase(import.meta.env.VITE_POCKETBASE_URL || "http://localhost:8090");
+const pb = new PocketBase(
+  import.meta.env.VITE_POCKETBASE_URL || 'http://localhost:8090',
+)
 
-export default pb;
+export default pb

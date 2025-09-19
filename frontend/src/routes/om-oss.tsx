@@ -6,5 +6,7 @@ export const Route = createFileRoute('/om-oss')({
 })
 
 function AboutUs() {
-  return <Container>Hva skal det stå her? Og hvilke bilder vil dere ha?</Container>
+  return (
+    <Container>Hva skal det stå her? Og hvilke bilder vil dere ha?</Container>
+  )
 }
