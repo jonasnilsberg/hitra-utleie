@@ -1,10 +1,13 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
+	"time"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/joho/godotenv"
 	"github.com/pocketbase/dbx"
 	"github.com/pocketbase/pocketbase"
@@ -16,13 +19,22 @@ import (
 type EnvironmentVariable string
 
 type Equipment struct {
-	Id   string `json:"id" db:"id"`
-	Title string `json:"title" db:"title"`
+	Id            string `json:"id" db:"id"`
+	Title         string `json:"title" db:"title"`
 	CategoryTitle string `json:"category_title" db:"category_title"`
 }
 
+type Environment string
+
 const (
+	Development Environment = "development"
+	Production  Environment = "production"
+)
+
+const (
+	ENVIRONMENT    EnvironmentVariable = "ENVIRONMENT"
 	RESEND_API_KEY EnvironmentVariable = "RESEND_API_KEY"
+	SENTRY_DSN     EnvironmentVariable = "SENTRY_DSN"
 )
 
 func main() {
@@ -30,6 +42,29 @@ func main() {
 	if err != nil {
 		log.Println("Error loading .env file")
 	}
+
+	apiKey := os.Getenv(string(RESEND_API_KEY))
+	sentryDsn := os.Getenv(string(SENTRY_DSN))
+
+	environment := os.Getenv(string(ENVIRONMENT))
+	if environment == "" {
+		environment = string(Development)
+	}
+
+	err = sentry.Init(sentry.ClientOptions{
+		Dsn:         sentryDsn,
+		Environment: environment,
+		EnableLogs:  true,
+	})
+
+	ctx := context.Background()
+	logger := sentry.NewLogger(ctx)
+
+	if err != nil {
+		log.Fatalf("sentry.Init: %s", err)
+	}
+
+	defer sentry.Flush(2 * time.Second)
 
 	app := pocketbase.NewWithConfig(pocketbase.Config{
 		DefaultDataDir: "./pb/pb_data",
@@ -53,20 +88,18 @@ func main() {
 			"id": equipmentId,
 		}).One(&equipment)
 		if err != nil {
-			fmt.Println("Error fetching equipment:", err)
+			logError(fmt.Errorf("Could not find equipment with id: %s. Error: %w", equipmentId, err))
 			return err
 		}
-
-		apiKey := os.Getenv(string(RESEND_API_KEY))
 
 		client := resend.NewClient(apiKey)
 
 		equipmentLink := fmt.Sprintf("https://hitra-utleie-admin.jonasvps.xyz/kategorier/%s/utstyr/%s", equipment.CategoryTitle, equipment.Id)
 
 		params := &resend.SendEmailRequest{
-			From:    "Hitra Utleie AS <hitra-utleie@resend.dev>",
-			To:      []string{"jonas.refsnes@gmail.com"},
-			Html:    fmt.Sprintf(`
+			From: "Hitra Utleie AS <hitra-utleie@resend.dev>",
+			To:   []string{"jonas.refsnes@gmail.com"},
+			Html: fmt.Sprintf(`
 			<strong>Ny interessemelding om leie av <a href="%s">%s</a></strong>
 				<p>Kontakt:<p/>
 				<p>Navn: %s</p>
@@ -77,11 +110,12 @@ func main() {
 
 		sent, err := client.Emails.Send(params)
 		if err != nil {
-			fmt.Println(err.Error())
+			logError(fmt.Errorf("could not send email with resend. Error: %w", err))
 			return err
 		}
 
-		fmt.Println("Email sent with ID:", sent.Id)
+		logger.Info().String("name", name).String("email", email).String("phone", phone).String("equipmentId", equipmentId).String("equipmentTitle", equipment.Title).
+			String("emailId", sent.Id).Emit("New lead created for equipment %s", equipment.Title)
 
 		return nil
 	})
@@ -89,4 +123,9 @@ func main() {
 	if err := app.Start(); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func logError(err error) {
+	sentry.CaptureException(err)
+	log.Println(err)
 }
