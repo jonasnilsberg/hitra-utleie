@@ -1,2 +1,4 @@
-backend/pb_data/
+backend/pb/pb_data/
+backend/.env
 frontend/.env
+

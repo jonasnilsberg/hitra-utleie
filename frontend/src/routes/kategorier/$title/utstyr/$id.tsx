@@ -144,9 +144,12 @@ function ShowInterestModal({ open, setOpen, equipment }: ShowInterestModalProps)
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
 
   function handleSubmit(event: React.FormEvent) {
     event.preventDefault()
+    setLoading(true)
     // Handle form submission logic here
     pb.collection('leads').create({
       name,
@@ -155,8 +158,10 @@ function ShowInterestModal({ open, setOpen, equipment }: ShowInterestModalProps)
       equipment: equipment.id
     }).then(() => {
       setOpen(false)
+      setLoading(false)
     }).catch((err) => {
-      console.error(err)
+      setError('Noe gikk galt, vennligst prøv igjen senere.')
+      setLoading(false)
     })
   }
 
@@ -236,12 +241,14 @@ function ShowInterestModal({ open, setOpen, equipment }: ShowInterestModalProps)
                   </div>
                 </div>
               </div>
+              {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
               <div className="mt-5 sm:mt-6">
                 <button
                   type="submit"
+                  disabled={loading}
                   className="inline-flex w-full justify-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-xs cursor-pointer hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
-                  Send
+                  {loading ? 'Sender...' : 'Send'}
                 </button>
               </div>
             </DialogPanel>
