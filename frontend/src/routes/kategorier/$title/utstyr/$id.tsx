@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import {
   Dialog,
   DialogBackdrop,
@@ -13,25 +13,76 @@ import {
 import { useState } from 'react'
 import pb from '../../../../pocketbase'
 import type { Equipment } from '../../../../types/equipment'
+import { ChevronRightIcon, HomeIcon } from '@heroicons/react/24/outline'
+import Container from '../../../../components/Container'
 
 export const Route = createFileRoute('/kategorier/$title/utstyr/$id')({
   component: Equipment,
   loader: async ({ params }) => {
-    const equipment = await pb
-      .collection<Equipment>('equipment')
-      .getOne(params.id)
-    return { equipment }
+    const [equipment, category] = await Promise.all([
+      pb.collection<Equipment>('equipment').getOne(params.id),
+      pb.collection('categories').getFirstListItem(`title = "${params.title}"`),
+    ])
+    return { equipment, category }
   },
 })
 
 function Equipment() {
-  const { equipment } = Route.useLoaderData()
+  const { equipment, category } = Route.useLoaderData()
   const [open, setOpen] = useState(false)
 
   return (
     <>
-      <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-        <div className="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8">
+      <Container>
+        <nav aria-label="Breadcrumb" className="flex">
+          <ol role="list" className="flex items-center space-x-4">
+            <li>
+              <div>
+                <Link to="/" className="text-gray-400 hover:text-gray-500">
+                  <HomeIcon aria-hidden="true" className="size-5 shrink-0" />
+                  <span className="sr-only">Home</span>
+                </Link>
+              </div>
+            </li>
+            <li>
+              <div className="flex items-center">
+                <ChevronRightIcon aria-hidden="true" className="size-5 shrink-0 text-gray-400" />
+                <Link
+                  to={'/kategorier'}
+                  aria-current={'page'}
+                  className="ml-4 text-sm font-medium text-gray-400 hover:text-gray-700"
+                >
+                  Kategorier
+                </Link>
+              </div>
+            </li>
+            <li>
+              <div className="flex items-center">
+                <ChevronRightIcon aria-hidden="true" className="size-5 shrink-0 text-gray-400" />
+                <Link
+                  to={'/kategorier'}
+                  aria-current={'page'}
+                  className="ml-4 text-sm font-medium text-gray-400 hover:text-gray-700"
+                >
+                  {category.title}
+                </Link>
+              </div>
+            </li>
+            <li>
+              <div className="flex items-center">
+                <ChevronRightIcon aria-hidden="true" className="size-5 shrink-0 text-gray-400" />
+                <Link
+                  to={'/kategorier'}
+                  aria-current={'page'}
+                  className="ml-4 text-sm font-medium text-gray-900 hover:text-gray-700"
+                >
+                  {equipment.title}
+                </Link>
+              </div>
+            </li>
+          </ol>
+        </nav>
+        <div className="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8 py-8">
           {/* Image gallery */}
           <TabGroup className="flex flex-col-reverse">
             {/* Image selector */}
@@ -136,7 +187,7 @@ function Equipment() {
             </section>
           </div>
         </div>
-      </div>
+      </Container>
       <ShowInterestModal open={open} setOpen={setOpen} equipment={equipment} />
     </>
   )

@@ -2,6 +2,7 @@ import { Link, createFileRoute } from '@tanstack/react-router'
 import Container from '../../components/Container'
 import pb from '../../pocketbase'
 import type { Category } from '../../types/category'
+import { ChevronRightIcon, HomeIcon } from '@heroicons/react/24/outline'
 
 export const Route = createFileRoute('/kategorier/')({
   component: Categories,
@@ -17,20 +18,42 @@ function Categories() {
   return (
     <>
       <Container>
-        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-          <div className="py-18 text-center">
+        <nav aria-label="Breadcrumb" className="flex">
+          <ol role="list" className="flex items-center space-x-4">
+            <li>
+              <div>
+                <Link to="/" className="text-gray-400 hover:text-gray-500">
+                  <HomeIcon aria-hidden="true" className="size-5 shrink-0" />
+                  <span className="sr-only">Home</span>
+                </Link>
+              </div>
+            </li>
+              <li>
+                <div className="flex items-center">
+                  <ChevronRightIcon aria-hidden="true" className="size-5 shrink-0 text-gray-400" />
+                  <Link
+                    to={'/kategorier'}
+                    aria-current={'page'}
+                    className="ml-4 text-sm font-medium text-gray-900 hover:text-gray-700"
+                  >
+                    Kategorier
+                  </Link>
+                </div>
+              </li>
+          </ol>
+        </nav>
+          <div className="py-8">
             <h1 className="text-4xl font-bold tracking-tight text-gray-900">
               Kategorier
             </h1>
-            <p className="mx-auto mt-4 max-w-3xl text-base text-gray-500">
+            <p className="mt-4 text-gray-500">
               Velg en kategori for å se det tilgjengelige utstyret innenfor den.
             </p>
           </div>
-        </div>
         {categories.length === 0 && (
           <p className="text-center">Ingen kategorier funnet.</p>
         )}
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {categories.map((category) => (
             <CategoryCard key={category.id} category={category} />
           ))}
@@ -46,7 +69,7 @@ function Categories() {
             service og tekniske problemer som kan stoppe arbeidet. Vi tilbyr
             fleksible løsninger som tilpasses ditt spesifikke prosjekt og behov.
             Vårt kompetente team hjelper deg med å velge rett utstyr og sikrer
-            at alt er klart til bruk når du trenger det.Retry
+            at alt er klart til bruk når du trenger det.
           </p>
         </div>
       </Container>

@@ -117,7 +117,7 @@ func main() {
 		logger.Info().String("name", name).String("email", email).String("phone", phone).String("equipmentId", equipmentId).String("equipmentTitle", equipment.Title).
 			String("emailId", sent.Id).Emit("New lead created for equipment %s", equipment.Title)
 
-		return nil
+		return e.Next()
 	})
 
 	if err := app.Start(); err != nil {

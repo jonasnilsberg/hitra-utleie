@@ -3,6 +3,7 @@ import Container from '../../../../components/Container'
 import pb from '../../../../pocketbase'
 import type { Category } from '../../../../types/category'
 import type { Equipment } from '../../../../types/equipment'
+import { ChevronRightIcon, HomeIcon } from '@heroicons/react/24/outline'
 
 export const Route = createFileRoute('/kategorier/$title/utstyr/')({
   component: CategoryEquipment,
@@ -22,16 +23,50 @@ function CategoryEquipment() {
 
   return (
     <Container>
-      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-        <div className="py-18 text-center">
+      <nav aria-label="Breadcrumb" className="flex">
+        <ol role="list" className="flex items-center space-x-4">
+          <li>
+            <div>
+              <Link to="/" className="text-gray-400 hover:text-gray-500">
+                <HomeIcon aria-hidden="true" className="size-5 shrink-0" />
+                <span className="sr-only">Home</span>
+              </Link>
+            </div>
+          </li>
+          <li>
+            <div className="flex items-center">
+              <ChevronRightIcon aria-hidden="true" className="size-5 shrink-0 text-gray-400" />
+              <Link
+                to={'/kategorier'}
+                className="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700"
+              >
+                Kategorier
+              </Link>
+            </div>
+          </li>
+          <li>
+            <div className="flex items-center">
+              <ChevronRightIcon aria-hidden="true" className="size-5 shrink-0 text-gray-400" />
+              <Link
+                to={'/kategorier/$title/utstyr'}
+                params={{ title: category.title }}
+                aria-current={'page'}
+                className="ml-4 text-sm font-medium text-gray-900 hover:text-gray-700"
+              >
+              { category.title }
+              </Link>
+            </div>
+          </li>
+        </ol>
+      </nav>
+        <div className="py-8">
           <h1 className="text-4xl font-bold tracking-tight text-gray-900">
             {category.title}
           </h1>
-          <p className="mx-auto mt-4 max-w-3xl text-base text-gray-500">
+          <p className="mt-4 text-gray-500">
             {category.description}
           </p>
         </div>
-      </div>
       {equipment.length === 0 && (
         <p className="text-center">
           Ingen utstyr funnet i denne kategorien. Kom tilbake senere :-)
