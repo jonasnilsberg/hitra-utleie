@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, notFound } from '@tanstack/react-router'
 import {
   Dialog,
   DialogBackdrop,
@@ -19,11 +19,17 @@ import Container from '../../../../components/Container'
 export const Route = createFileRoute('/kategorier/$title/utstyr/$id')({
   component: Equipment,
   loader: async ({ params }) => {
-    const [equipment, category] = await Promise.all([
-      pb.collection<Equipment>('equipment').getOne(params.id),
-      pb.collection('categories').getFirstListItem(`title = "${params.title}"`),
-    ])
-    return { equipment, category }
+    try {
+
+      const [equipment, category] = await Promise.all([
+        pb.collection<Equipment>('equipment').getOne(params.id),
+        pb.collection('categories').getFirstListItem(`title = "${params.title}"`),
+      ])
+      return { equipment, category }
+    } catch (error) {
+      console.error(error)
+      throw notFound()
+    }
   },
 })
 

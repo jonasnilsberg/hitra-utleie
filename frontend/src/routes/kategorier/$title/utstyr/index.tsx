@@ -1,4 +1,4 @@
-import { Link, createFileRoute } from '@tanstack/react-router'
+import { Link, createFileRoute, notFound } from '@tanstack/react-router'
 import Container from '../../../../components/Container'
 import pb from '../../../../pocketbase'
 import type { Category } from '../../../../types/category'
@@ -8,13 +8,18 @@ import { ChevronRightIcon, HomeIcon } from '@heroicons/react/24/outline'
 export const Route = createFileRoute('/kategorier/$title/utstyr/')({
   component: CategoryEquipment,
   loader: async ({ params }) => {
-    const equipment = await pb
-      .collection<Equipment>('equipment')
-      .getFullList({ filter: `category.title = "${params.title}"` })
-    const category = await pb
-      .collection<Category>('categories')
-      .getFirstListItem(`title = "${params.title}"`)
-    return { equipment, category }
+    try {
+      const equipment = await pb
+        .collection<Equipment>('equipment')
+        .getFullList({ filter: `category.title = "${params.title}"` })
+      const category = await pb
+        .collection<Category>('categories')
+        .getFirstListItem(`title = "${params.title}"`)
+      return { equipment, category }
+    } catch (error) {
+      console.error(error)
+      throw notFound()
+    }
   },
 })
 
@@ -53,22 +58,22 @@ function CategoryEquipment() {
                 aria-current={'page'}
                 className="ml-4 text-sm font-medium text-gray-900 hover:text-gray-700"
               >
-              { category.title }
+                {category.title}
               </Link>
             </div>
           </li>
         </ol>
       </nav>
-        <div className="py-8">
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900">
-            {category.title}
-          </h1>
-          <p className="mt-4 text-gray-500">
-            {category.description}
-          </p>
-        </div>
+      <div className="py-8">
+        <h1 className="text-4xl font-bold tracking-tight text-gray-900">
+          {category.title}
+        </h1>
+        <p className="mt-4 text-gray-500">
+          {category.description}
+        </p>
+      </div>
       {equipment.length === 0 && (
-        <p className="text-center">
+        <p className="">
           Ingen utstyr funnet i denne kategorien. Kom tilbake senere :-)
         </p>
       )}
