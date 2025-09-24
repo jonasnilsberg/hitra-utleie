@@ -38,7 +38,7 @@ function Homepage() {
           <div className="md:flex justify-center">
             <div className="w-full md:ml-12 lg:ml-28 h-[400px] md:h-[800px] bg-primary">
               <div className="w-full h-full flex justify-center items-center">
-                <p className="text-white font-bold text-[40px] md:text-[70px] text-center px-6">
+                <div className="text-white font-bold text-[40px] md:text-[70px] text-center px-6">
                   <TypeWriter
                     options={{
                       strings: [
@@ -50,7 +50,7 @@ function Homepage() {
                       loop: true,
                     }}
                   />
-                </p>
+                </div>
               </div>
             </div>
           </div>

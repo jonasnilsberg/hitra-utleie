@@ -18,6 +18,7 @@ export const Route = createFileRoute('/kategorier/$title/utstyr/')({
       return { equipment, category }
     } catch (error) {
       console.error(error)
+
       throw notFound()
     }
   },
@@ -40,7 +41,10 @@ function CategoryEquipment() {
           </li>
           <li>
             <div className="flex items-center">
-              <ChevronRightIcon aria-hidden="true" className="size-5 shrink-0 text-gray-400" />
+              <ChevronRightIcon
+                aria-hidden="true"
+                className="size-5 shrink-0 text-gray-400"
+              />
               <Link
                 to={'/kategorier'}
                 className="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700"
@@ -51,7 +55,10 @@ function CategoryEquipment() {
           </li>
           <li>
             <div className="flex items-center">
-              <ChevronRightIcon aria-hidden="true" className="size-5 shrink-0 text-gray-400" />
+              <ChevronRightIcon
+                aria-hidden="true"
+                className="size-5 shrink-0 text-gray-400"
+              />
               <Link
                 to={'/kategorier/$title/utstyr'}
                 params={{ title: category.title }}
@@ -68,9 +75,7 @@ function CategoryEquipment() {
         <h1 className="text-4xl font-bold tracking-tight text-gray-900">
           {category.title}
         </h1>
-        <p className="mt-4 text-gray-500">
-          {category.description}
-        </p>
+        <p className="mt-4 text-gray-500">{category.description}</p>
       </div>
       {equipment.length === 0 && (
         <p className="">
