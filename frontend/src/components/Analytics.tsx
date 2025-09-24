@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 export default function Analytics() {
 
-  const VITE_ENABLE_ANALYTICS = import.meta.env.VITE_ANALYTICS_ID || false
+  const VITE_ENABLE_ANALYTICS = import.meta.env.VITE_ENABLE_ANALYTICS || false
 
   useEffect(() => {
     if (!VITE_ENABLE_ANALYTICS) {
